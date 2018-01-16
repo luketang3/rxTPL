@@ -1,0 +1,43 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+
+  repositories {
+    google()
+    jcenter()
+  }
+  dependencies {
+    classpath 'com.android.tools.build:gradle:3.0.1'
+
+
+    // NOTE: Do not place your application dependencies here; they belong
+    // in the individual module build.gradle files
+  }
+}
+
+allprojects {
+  repositories {
+    google()
+    jcenter()
+  }
+}
+
+task clean(type: Delete) {
+  delete rootProject.buildDir
+}
+
+
+ext {
+  minSdkVersion = 15
+  targetSdkVersion = 26
+  compileSdkVersion = 26
+  supportLibVersion = "26.1.0"
+
+  rxJavaVersion = "2.1.6"
+  rxAndroidVersion = "2.0.1"
+  okHttp3Version = "3.9.0"
+
+  deps = [rxJava   : "io.reactivex.rxjava2:rxjava:$rxJavaVersion",
+          rxAndroid: "io.reactivex.rxjava2:rxandroid:$rxAndroidVersion",
+          okhttp3  : "com.squareup.okhttp3:okhttp:$okHttp3Version",]
+}

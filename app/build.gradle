@@ -1,0 +1,56 @@
+apply plugin: 'com.android.application'
+
+def releaseFile = file("release.keystore")
+def keyProp = new Properties()
+def configFile = file("config.properties")
+if (configFile.exists()) configFile.withInputStream { stream -> keyProp.load(stream) }
+
+android {
+  compileSdkVersion rootProject.ext.compileSdkVersion
+  defaultConfig {
+    //    applicationId "com.github.lkt.tpl"
+    if (releaseFile.exists()) {
+      applicationId keyProp.getProperty("APP_NAME")
+    } else {
+      applicationId "net.sourceforge.simcpux"
+    }
+    minSdkVersion rootProject.ext.minSdkVersion
+    targetSdkVersion rootProject.ext.targetSdkVersion
+    versionCode 1
+    versionName "1.0"
+    testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    manifestPlaceholders = [WECHAT_APP_ID    : keyProp.getProperty("WECHAT_APP_ID") ?: "",
+                            WECHAT_APP_SECRET: keyProp.getProperty("WECHAT_APP_SECRET") ?: ""]
+  }
+  buildTypes {
+    release {
+      minifyEnabled false
+      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+    }
+  }
+
+  signingConfigs {
+    debug {
+      if (releaseFile.exists()) {
+        storeFile releaseFile
+        keyAlias keyProp.getProperty("KEY_ALIAS")
+        keyPassword keyProp.getProperty("KEY_PWD")
+        storePassword keyProp.getProperty("STORE_PWD")
+      } else {
+        storeFile file("debug.keystore")
+      }
+      //      applicationId "net.sourceforge.simcpux"
+    }
+  }
+}
+
+dependencies {
+  implementation fileTree(include: ['*.jar'], dir: 'libs')
+  implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
+  implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+  testImplementation 'junit:junit:4.12'
+  androidTestImplementation 'com.android.support.test:runner:1.0.1'
+  androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+  implementation project(':wechat')
+}
